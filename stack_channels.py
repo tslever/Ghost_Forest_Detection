@@ -40,28 +40,32 @@ def verify_dimensions(*arrays):
         raise ValueError(f"All channels must have the same dimensions. Found shapes: {shapes}")
 
 
-base_path = 'data/output_train_FINETUNING/'
-red_path = os.path.join(base_path, 'r_0.png')
-green_path = os.path.join(base_path, 'g_0.png')
-blue_path = os.path.join(base_path, 'b_0.png')
-nir_path = os.path.join(base_path, 'nir_0.png')
+if __name__ == "__main__":
 
-red_channel = load_channel(red_path)
-green_channel = load_channel(green_path)
-blue_channel = load_channel(blue_path)
-nir_channel = load_channel(nir_path)
+    for index_of_image in range(0, 105):
 
-if (red_channel is None) or (green_channel is None) or (blue_channel is None) or (nir_channel is None):
-    raise ValueError("One or more channels failed to load.")
+        base_path = 'data/output_train_FINETUNING/'
+        red_path = os.path.join(base_path, f'r_{index_of_image}.png')
+        green_path = os.path.join(base_path, f'g_{index_of_image}.png')
+        blue_path = os.path.join(base_path, f'b_{index_of_image}.png')
+        nir_path = os.path.join(base_path, f'nir_{index_of_image}.png')
 
-verify_dimensions(red_channel, green_channel, blue_channel, nir_channel)
+        red_channel = load_channel(red_path)
+        green_channel = load_channel(green_path)
+        blue_channel = load_channel(blue_path)
+        nir_channel = load_channel(nir_path)
 
-stacked_array = np.stack([red_channel, green_channel, blue_channel, nir_channel], axis = 0)
+        if (red_channel is None) or (green_channel is None) or (blue_channel is None) or (nir_channel is None):
+            raise ValueError("One or more channels failed to load.")
 
-output_tif_path = os.path.join(base_path, 'image_0.tif')
-tifffile.imwrite(
-    output_tif_path,
-    stacked_array,
-    metadata = None,
-    dtype = stacked_array.dtype
-)
+        verify_dimensions(red_channel, green_channel, blue_channel, nir_channel)
+
+        stacked_array = np.stack([red_channel, green_channel, blue_channel, nir_channel], axis = 0)
+
+        output_tif_path = os.path.join(base_path, f'image_{index_of_image}.tif')
+        tifffile.imwrite(
+            output_tif_path,
+            stacked_array,
+            metadata = None,
+            dtype = stacked_array.dtype
+        )
