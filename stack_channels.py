@@ -42,7 +42,7 @@ def verify_dimensions(*arrays):
 
 if __name__ == "__main__":
 
-    for index_of_image in range(0, 105):
+    for index_of_image in range(0, 105 + 1):
 
         base_path = 'data/output_train_FINETUNING/'
         red_path = os.path.join(base_path, f'r_{index_of_image}.png')
