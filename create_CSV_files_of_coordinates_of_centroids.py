@@ -24,6 +24,6 @@ for index_of_annotation in range(0, 105 + 1):
     properties = measure.regionprops(ndarray_of_labels)
     data = [{'x': prop.centroid[1], 'y': prop.centroid[0]} for prop in properties]
 
-    data_frame_of_coordinate_pairs = pd.DataFrame(data)
+    data_frame_of_coordinate_pairs = pd.DataFrame(data, columns = ["x", "y"])
     data_frame_of_coordinate_pairs = data_frame_of_coordinate_pairs.round().astype(int)
     data_frame_of_coordinate_pairs.to_csv(f"coordinates_of_centroids_{index_of_annotation}.csv", index = False)
