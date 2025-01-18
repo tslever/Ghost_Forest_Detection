@@ -1,6 +1,6 @@
+import numpy as np
 import os
 import rasterio
-import numpy as np
 from rasterio.transform import Affine
 
 
@@ -14,7 +14,10 @@ def chop_tiff_into_subimages(
     Pads with zeros on the right/bottom if dimensions are not multiples of tile_size.
     """
 
-    os.makedirs(output_directory, exist_ok=True)
+    base_name_with_ext = os.path.basename(input_tiff_path)
+    base_name, extension = os.path.splitext(base_name_with_ext)
+
+    os.makedirs(output_directory, exist_ok = True)
 
     with rasterio.open(input_tiff_path) as src:
         image_data = src.read()
@@ -71,7 +74,7 @@ def chop_tiff_into_subimages(
                 
                 out_filename = os.path.join(
                     output_directory,
-                    f"subimage_{subimage_index}_of_image_0.tif"
+                    f"{base_name}_{subimage_index}.tif"
                 )
                 
                 with rasterio.open(out_filename, 'w', **tile_profile) as dst:
@@ -81,6 +84,8 @@ def chop_tiff_into_subimages(
 
 
 if __name__ == "__main__":
-    input_tiff = "./data/images_to_chop/image_0.tif"
     output_dir = "./data/chopped_images"
-    chop_tiff_into_subimages(input_tiff, output_dir, tile_size=256)
+
+    for index_of_image in range(0, 105 + 1):
+        input_tiff = f"./data/images_to_chop/image_{index_of_image}.tif"
+        chop_tiff_into_subimages(input_tiff, output_dir, tile_size = 256)
