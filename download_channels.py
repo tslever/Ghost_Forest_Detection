@@ -1,6 +1,12 @@
 import ee
 import geemap
 import pandas as pd
+import os
+
+
+output_dir = "./data/channels"
+os.makedirs(output_dir, exist_ok = True)
+
 
 try:
     ee.Initialize()
@@ -47,25 +53,26 @@ for idx, row in df.iterrows():
         print(f"No images found for index {idx}. Skipping...")
         continue
 
-    image = image_collection.median().visualize(
-        bands=['R', 'G', 'B'],
-        min=0,
-        max=255
-    )
+    for channel in ["R", "G", "B", "N"]:
+        image = image_collection.median().visualize(
+            bands=[channel],
+            min=0,
+            max=255
+        )
 
-    region = point.buffer(1000).bounds()
+        region = point.buffer(1000).bounds()
 
-    out_file = f"satellite_image_{idx}.tif"
+        out_file = os.path.join(output_dir, f"{channel.lower()}_{idx}.tif")
 
-    geemap.ee_export_image(
-        ee_object=image,
-        filename=out_file,
-        scale=1,
-        region=region,
-        file_per_band=False,
-        format="ZIPPED_GEO_TIFF",
-        unzip=True,
-        timeout=300
-    )
+        geemap.ee_export_image(
+            ee_object=image,
+            filename=out_file,
+            scale=1,
+            region=region,
+            file_per_band=False,
+            format="ZIPPED_GEO_TIFF",
+            unzip=True,
+            timeout=300
+        )
 
-    print(f"Exported: {out_file}\n")
+        print(f"Exported: {out_file}\n")
