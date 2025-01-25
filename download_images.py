@@ -6,50 +6,66 @@ try:
     ee.Initialize()
 except Exception as e:
     ee.Authenticate()
-    ee.Initialize(project = "ghost-forest-detection")
+    ee.Initialize(project="ghost-forest-detection")
 
 df = pd.read_csv("positions_of_centroids_of_images_and_locations_in_LA_and_TX.csv")
 
-start_date = '2021-04-01'
-end_date   = '2021-10-31'
+states = ee.FeatureCollection("TIGER/2018/States")
+la_geometry = states.filter(ee.Filter.eq("NAME", "Louisiana")).geometry()
+tx_geometry = states.filter(ee.Filter.eq("NAME", "Texas")).geometry()
+
+def get_state_and_year(point):
+    if la_geometry.contains(point).getInfo():
+        return ("Louisiana", "2023")
+    elif tx_geometry.contains(point).getInfo():
+        return ("Texas", "2022")
+    else:
+        return ("Other", "2021")
 
 for idx, row in df.iterrows():
+
     if idx > 10:
         break
 
-    lat = row['Latitude']
-    lon = row['Longitude']
-    
+    lat = row["Latitude"]
+    lon = row["Longitude"]
     point = ee.Geometry.Point([lon, lat])
-    region = point.buffer(1_000).bounds()
-    
-    image_collection = ee.ImageCollection("COPERNICUS/S2_HARMONIZED").filterDate(start_date, end_date).filterBounds(point)
+    state_name, year_str = get_state_and_year(point)
+
+    start_date = f"{year_str}-04-01"
+    end_date   = f"{year_str}-10-31"
+
+    print(f"Index {idx} | Lat: {lat}, Lon: {lon} | State: {state_name} | Year: {year_str}")
+
+    image_collection = (ee
+        .ImageCollection("USDA/NAIP/DOQQ")
+        .filterDate(start_date, end_date)
+        .filterBounds(point)
+    )
 
     if image_collection.size().getInfo() == 0:
         print(f"No images found for index {idx}. Skipping...")
         continue
 
     image = image_collection.median().visualize(
-        bands = ['B4', 'B3', 'B2'],
-        min = 0,
-        max = 3000
+        bands=['R', 'G', 'B'],
+        min=0,
+        max=255
     )
-    
+
+    region = point.buffer(1000).bounds()
+
     out_file = f"satellite_image_{idx}.tif"
+
     geemap.ee_export_image(
-        ee_object = image,
-        filename = out_file,
-        scale = 1,
-        crs = None,
-        crs_transform = None,
-        region = region,
-        dimensions = None,
-        file_per_band = False,
-        format = "ZIPPED_GEO_TIFF",
-        unzip = True,
-        unmask_value = None,
-        timeout = 300,
-        proxies = None
+        ee_object=image,
+        filename=out_file,
+        scale=1,
+        region=region,
+        file_per_band=False,
+        format="ZIPPED_GEO_TIFF",
+        unzip=True,
+        timeout=300
     )
-    
-    print(f"Exported: {out_file}")
+
+    print(f"Exported: {out_file}\n")
