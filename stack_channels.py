@@ -40,7 +40,7 @@ def verify_dimensions(*arrays):
 if __name__ == "__main__":
 
     path_to_directory_of_channels_to_stack = r".\data\output_train_FINETUNING"
-    #path_to_directory_of_channels_to_stack = r".\data\channels"
+    path_to_directory_of_channels_to_stack = r".\data\channels"
 
     if path_to_directory_of_channels_to_stack == r".\data\output_train_FINETUNING":
         prefix_for_channel_N = "nir_"

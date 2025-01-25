@@ -60,14 +60,14 @@ for idx, row in df.iterrows():
             max=255
         )
 
-        region = point.buffer(1000).bounds()
+        region = point.buffer(1_000).bounds()
 
         out_file = os.path.join(output_dir, f"{channel.lower()}_{idx}.tif")
 
         geemap.ee_export_image(
             ee_object=image,
             filename=out_file,
-            scale=1,
+            scale=0.6,
             region=region,
             file_per_band=False,
             format="ZIPPED_GEO_TIFF",
