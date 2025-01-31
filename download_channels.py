@@ -60,7 +60,7 @@ for idx, row in df.iterrows():
             max=255
         )
 
-        region = point.buffer(1_000).bounds()
+        region = point.buffer(150).bounds()
 
         out_file = os.path.join(output_dir, f"{channel.lower()}_{idx}.tif")
 
