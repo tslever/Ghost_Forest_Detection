@@ -54,7 +54,7 @@ for idx, row in df.iterrows():
         continue
 
     for channel in ["R", "G", "B", "N"]:
-        image = image_collection.median().visualize(
+        image = image_collection.first().visualize(
             bands=[channel],
             min=0,
             max=255
