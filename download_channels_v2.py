@@ -1,3 +1,5 @@
+# This script download NAIP imagery directly to local drive. Each imagery should contain 4 bands stored in GeoTiff.
+
 import ee
 import geemap
 import pandas as pd
