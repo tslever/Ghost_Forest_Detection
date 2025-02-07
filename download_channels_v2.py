@@ -10,7 +10,7 @@ try:
     ee.Initialize()
 except Exception as e:
     ee.Authenticate()
-    ee.Initialize(project="ghost-forest-detection")
+    ee.Initialize(project="ghost-forest-us")
 
 # Define paths
 df = pd.read_csv("positions_of_centroids_of_images_and_locations_in_LA_and_TX.csv")
