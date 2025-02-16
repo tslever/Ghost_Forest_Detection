@@ -8,10 +8,10 @@ import rasterio
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 # Process each annotation image.
-for index_of_annotation in range(9):
+for index_of_annotation in range(110):
     # --- Process annotation image to extract contours and centroids ---
     # Read the annotation image.
-    annotation_image = rasterio.open(f'/Users/apm5rt/Library/CloudStorage/OneDrive-UniversityofVirginia/code_deepLearning/capstone_gf/output_train_FINETUNING/annotation_{index_of_annotation}.png').read(1)
+    annotation_image = rasterio.open(f'data/output_train_FINETUNING/annotation_{index_of_annotation}.png').read(1)
     
     # Convert annotation image to grayscale if needed.
     if len(annotation_image.shape) == 2:
