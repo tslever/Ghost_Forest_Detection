@@ -2,15 +2,16 @@ from skimage import io, color, filters, measure
 import pandas as pd
 from PIL import ImageFile
 import matplotlib.pyplot as plt
+import rasterio
 
 # Allow loading truncated images.
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 # Process each annotation image.
-for index_of_annotation in range(106):
+for index_of_annotation in range(9):
     # --- Process annotation image to extract contours and centroids ---
     # Read the annotation image.
-    annotation_image = io.imread(f'data/output_train_FINETUNING/annotation_{index_of_annotation}.png')
+    annotation_image = rasterio.open(f'/Users/apm5rt/Library/CloudStorage/OneDrive-UniversityofVirginia/code_deepLearning/capstone_gf/output_train_FINETUNING/annotation_{index_of_annotation}.png').read(1)
     
     # Convert annotation image to grayscale if needed.
     if len(annotation_image.shape) == 2:
@@ -23,6 +24,14 @@ for index_of_annotation in range(106):
     # Create a binary image using Otsu's thresholding.
     threshold = filters.threshold_otsu(gray_annotation)
     binary = gray_annotation > threshold  # Assuming polygons are lighter than the background.
+    
+    # # Plot the binary image.
+    # plt.figure(figsize=(6, 6))
+    # plt.imshow(annotation_image, cmap='gray')
+    # plt.axis('off')  # Hide axes for better visualization
+    # plt.title(f'Binary Image - Annotation {index_of_annotation}')
+    # plt.show()
+    
     
     # Label connected regions.
     labeled_image = measure.label(binary, connectivity=2) # Use 8-way connectivity
