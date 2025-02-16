@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-df = pd.read_csv("output_excerpt.csv")
+df = pd.read_csv("nonblack_pixels.csv")
 
 # Plotting coordinate pairs from columns "X" and "Y"
 plt.figure(figsize=(8, 6))
