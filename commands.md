@@ -27,6 +27,16 @@
 `python create_images_and_csv_files_based_on_chopped_images_and_tables_of_centroids_of_trees.py`
 
 
+# Plot images based on chopped image and centroids.
+
+`python plot_images_and_centroids.py`
+
+
 # Rename CSV files based on chopped tables of centroids of trees to have the same base name as their corresponding images.
 
 `for f in data/csv_files_based_on_chopped_tables_of_centroids_of_trees/coordinates_of_centroids_*; do mv "$f" "${f//coordinates_of_centroids_/image_}"; done`
+
+
+# Pipe base names of training images to `train.txt`
+
+Run from folder with training images `for file in *; do     [ -f "$file" ] && echo "${file%.*}"; done > train.txt`.

@@ -69,8 +69,8 @@ if __name__ == "__main__":
 
         verify_dimensions(red_channel, green_channel, blue_channel, nir_channel)
 
-        #stacked_array = np.stack([red_channel, green_channel, blue_channel, nir_channel], axis = 0)
-        stacked_array = np.stack([nir_channel, red_channel, green_channel], axis = 0)
+        stacked_array = np.stack([red_channel, green_channel, blue_channel, nir_channel], axis = 0)
+        #stacked_array = np.stack([nir_channel, red_channel, green_channel], axis = 0)
 
         output_tif_path = os.path.join(directory_of_images_to_chop, f'image_{index_of_image}.tif')
         tifffile.imwrite(

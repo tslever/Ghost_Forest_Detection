@@ -128,11 +128,11 @@ if __name__ == "__main__":
 
     tile_size = 256
     tiff_output_dir = "./data/images_based_on_chopped_images"
-    csv_output_dir = "./data/chopped_csvs"
+    csv_output_dir = "./data/csv_files_based_on_chopped_tables_of_centroids_of_trees"
 
     for index_of_image in range(0, 105 + 1):
         input_tiff_path = f"./data/images_to_chop/image_{index_of_image}.tif"
-        input_csv_path = f"./data/csv_files_based_on_chopped_tables_of_centroids_of_trees/coordinates_of_centroids_{index_of_image}.csv"
+        input_csv_path = f"./data/csv_files_of_tables_of_coordinates_of_centroids_of_trees/coordinates_of_centroids_{index_of_image}.csv"
         
         height, width = chop_tiff_into_subimages(
             input_tiff_path,
