@@ -132,7 +132,7 @@ if __name__ == "__main__":
 
     for index_of_image in range(0, 105 + 1):
         input_tiff_path = f"./data/images_to_chop/image_{index_of_image}.tif"
-        input_csv_path = f"./data/coordinates_of_centroids_of_trees_in_images_to_chop/coordinates_of_centroids_{index_of_image}.csv"
+        input_csv_path = f"./data/csv_files_based_on_chopped_tables_of_centroids_of_trees/coordinates_of_centroids_{index_of_image}.csv"
         
         height, width = chop_tiff_into_subimages(
             input_tiff_path,

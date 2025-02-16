@@ -8,7 +8,7 @@ import rasterio
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 # Process each annotation image.
-for index_of_annotation in range(110):
+for index_of_annotation in range(105 + 1):
     # --- Process annotation image to extract contours and centroids ---
     # Read the annotation image.
     annotation_image = rasterio.open(f'data/output_train_FINETUNING/annotation_{index_of_annotation}.png').read(1)
@@ -25,14 +25,6 @@ for index_of_annotation in range(110):
     threshold = filters.threshold_otsu(gray_annotation)
     binary = gray_annotation > threshold  # Assuming polygons are lighter than the background.
     
-    # # Plot the binary image.
-    # plt.figure(figsize=(6, 6))
-    # plt.imshow(annotation_image, cmap='gray')
-    # plt.axis('off')  # Hide axes for better visualization
-    # plt.title(f'Binary Image - Annotation {index_of_annotation}')
-    # plt.show()
-    
-    
     # Label connected regions.
     labeled_image = measure.label(binary, connectivity=2) # Use 8-way connectivity
     
@@ -42,7 +34,7 @@ for index_of_annotation in range(110):
     
     # Save centroids to CSV.
     centroids_df = pd.DataFrame(data, columns=["x", "y"]).round().astype(int)
-    csv_filename = f"coordinates_of_centroids_{index_of_annotation}.csv"
+    csv_filename = f"data/csv_files_of_tables_of_coordinates_of_centroids_of_trees/coordinates_of_centroids_{index_of_annotation}.csv"
     centroids_df.to_csv(csv_filename, index=False)
     
     # Reload the centroids data from the CSV file.
@@ -50,7 +42,7 @@ for index_of_annotation in range(110):
     
     # --- Load the corresponding background image and overlay annotations ---
     # Load the background image from 'data/output_train_FINETUNING/'.
-    bg_image = io.imread(f'data/output_train_FINETUNING/image_{index_of_annotation}.tif')
+    bg_image = io.imread(f'data/images_to_chop/image_{index_of_annotation}.tif')
     
     # Find contours from the binary annotation image.
     contours = measure.find_contours(binary, level=0.5)
@@ -78,6 +70,6 @@ for index_of_annotation in range(110):
     plt.tight_layout()
     
     # Save the figure to a file.
-    output_filename = f'overlay_figure_{index_of_annotation}.png'
+    output_filename = f'data/overlays_of_images_polygons_and_centroids/overlay_{index_of_annotation}.png'
     plt.savefig(output_filename, dpi=300)
     plt.close(fig)

@@ -40,6 +40,7 @@ def verify_dimensions(*arrays):
 if __name__ == "__main__":
 
     path_to_directory_of_channels_to_stack = r".\data\output_train_FINETUNING"
+    directory_of_images_to_chop = r".\data\images_to_chop"
 
     if path_to_directory_of_channels_to_stack == r".\data\output_train_FINETUNING":
         prefix_for_channel_N = "nir_"
@@ -68,9 +69,10 @@ if __name__ == "__main__":
 
         verify_dimensions(red_channel, green_channel, blue_channel, nir_channel)
 
-        stacked_array = np.stack([red_channel, green_channel, blue_channel, nir_channel], axis = 0)
+        #stacked_array = np.stack([red_channel, green_channel, blue_channel, nir_channel], axis = 0)
+        stacked_array = np.stack([nir_channel, red_channel, green_channel], axis = 0)
 
-        output_tif_path = os.path.join(path_to_directory_of_channels_to_stack, f'image_{index_of_image}.tif')
+        output_tif_path = os.path.join(directory_of_images_to_chop, f'image_{index_of_image}.tif')
         tifffile.imwrite(
             output_tif_path,
             stacked_array,
