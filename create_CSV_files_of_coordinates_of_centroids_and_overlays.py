@@ -40,23 +40,35 @@ for index_of_annotation in range(106):
     reloaded_centroids_df = pd.read_csv(csv_filename)
     
     # --- Load the corresponding background image and overlay annotations ---
-    # Load the background image from 'data/images_to_chop/'.
-    bg_image = io.imread(f'data/images_to_chop/image_{index_of_annotation}.tif')
+    # Load the background image from 'data/output_train_FINETUNING/'.
+    bg_image = io.imread(f'data/output_train_FINETUNING/image_{index_of_annotation}.tif')
     
-    # Create a plot with the background image.
-    fig, ax = plt.subplots(figsize=(8, 8))
-    ax.imshow(bg_image, cmap='gray')
-    
-    # Find and plot contours from the binary annotation image.
+    # Find contours from the binary annotation image.
     contours = measure.find_contours(binary, level=0.5)
+    
+    # Create a figure with two subplots: left for the original image, right for the overlay.
+    fig, axes = plt.subplots(1, 2, figsize=(16, 8))
+    
+    # Left subplot: Original background image.
+    axes[0].imshow(bg_image, cmap='gray')
+    axes[0].set_title('Original Image')
+    axes[0].axis('off')
+    
+    # Right subplot: Background image with overlays.
+    axes[1].imshow(bg_image, cmap='gray')
+    # Plot polygon contours.
     for contour in contours:
-        ax.plot(contour[:, 1], contour[:, 0], linewidth=2, color='yellow')
+        axes[1].plot(contour[:, 1], contour[:, 0], linewidth=2, color='yellow')
+    # Overlay centroids.
+    axes[1].scatter(reloaded_centroids_df["x"], reloaded_centroids_df["y"], 
+                    color='red', marker='o', s=50, label='Centroid')
+    axes[1].set_title('Overlay with Polygons and Centroids')
+    axes[1].legend()
+    axes[1].axis('off')
     
-    # Overlay centroids (loaded from CSV) onto the background image.
-    ax.scatter(reloaded_centroids_df["x"], reloaded_centroids_df["y"], 
-               color='red', marker='o', s=50, label='Centroid')
-    
-    ax.set_title(f"Overlay for image_{index_of_annotation}")
-    ax.legend()
     plt.tight_layout()
-    plt.show()
+    
+    # Save the figure to a file.
+    output_filename = f'overlay_figure_{index_of_annotation}.png'
+    plt.savefig(output_filename, dpi=300)
+    plt.close(fig)
