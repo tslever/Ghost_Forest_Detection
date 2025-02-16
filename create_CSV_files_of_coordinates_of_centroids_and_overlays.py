@@ -25,7 +25,7 @@ for index_of_annotation in range(106):
     binary = gray_annotation > threshold  # Assuming polygons are lighter than the background.
     
     # Label connected regions.
-    labeled_image = measure.label(binary)
+    labeled_image = measure.label(binary, connectivity=2) # Use 8-way connectivity
     
     # Calculate properties for each region and extract centroids.
     properties = measure.regionprops(labeled_image)
