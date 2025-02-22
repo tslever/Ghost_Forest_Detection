@@ -10,8 +10,12 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 #folder_with_annotation_images = "../urban-tree-detection-data/transfer_Atlantic/output_train_FINETUNING"
 #path_to_csv_files = f"../urban-tree-detection-data/csv_files_of_initial_tables_of_coordinates_of_centroids_of_trees"
-folder_with_annotation_images = "../urban-tree-detection-data/transfer_Atlantic/output_train_all"
-path_to_csv_files = f"../urban-tree-detection-data/csv_files_of_many_tables_of_coordinates_of_centroids_of_trees"
+#folder_with_annotation_images = "../urban-tree-detection-data/transfer_Atlantic/output_train_all"
+#path_to_csv_files = f"../urban-tree-detection-data/csv_files_of_many_tables_of_coordinates_of_centroids_of_trees"
+#folder_with_annotation_images = "../urban-tree-detection-data/transfer_Atlantic/output_val_FINETUNING"
+#path_to_csv_files = f"../urban-tree-detection-data/csv_files_of_initial_validation_tables_of_coordinates_of_centroids_of_trees"
+folder_with_annotation_images = "../urban-tree-detection-data/transfer_Atlantic/output_val_all"
+path_to_csv_files = f"../urban-tree-detection-data/csv_files_of_many_validation_tables_of_coordinates_of_centroids_of_trees"
 
 indices = set()
 for f in os.listdir(folder_with_annotation_images):
