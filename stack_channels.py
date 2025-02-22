@@ -1,81 +1,80 @@
-import numpy as np
-from PIL import Image
-import tifffile
 import os
+import rasterio
+import numpy as np
 
+# Input folder with georeferenced PNGs
+#input_folder = "../urban-tree-detection-data/transfer_Atlantic/output_train_FINETUNING"
+input_folder = "../urban-tree-detection-data/transfer_Atlantic/output_train_all"
+# Output folder for stacked TIFFs
+#output_folder = "../urban-tree-detection-data/stacked_initial_training_images"
+output_folder = "../urban-tree-detection-data/stacked_many_training_images"
+os.makedirs(output_folder, exist_ok = True)
 
-def load_channel(image_path):
-    with Image.open(image_path) as img:
-        if img.mode == 'RGB':
-            r, _, _ = img.split()
-            gray_img = r
-            array = np.array(gray_img)
-        elif img.mode == 'RGBA':
-            r, _, _, _ = img.split()
-            gray_img = r
-            array = np.array(gray_img)
-        elif img.mode == 'F':
-            array_float = np.array(img, dtype = np.float32)
-            max_val = array_float.max()
-            if max_val > 1.0:
-                scaled_array = (array_float / max_val) * 255.0
-            else:
-                scaled_array = array_float * 255.0
-            scaled_array = np.clip(scaled_array, 0, 255).astype(np.uint8)
-            return scaled_array
-        elif img.mode == 'L':
-            array = np.array(img)
-        else:
-            gray_img = img.convert('L')
-            array = np.array(gray_img)
-        return array
+# Function to scale data to 0 - 255
+def scale_to_8bit_global(data):
+    if data.dtype != np.uint8: # Only scale if not already 8-bit
+        data_min, data_max = np.nanmin(data), np.nanmax(data)
+        if data_max > data_min:  # Avoid division by zero
+            data = 255 * (data - data_min) / (data_max - data_min)
+        data = data.astype(np.uint8)
+    return data
 
+# Get all unique indices from the filenames
+indices = set()
+for f in os.listdir(input_folder):
+    if f.endswith(".png") and ("r_" in f or "g_" in f or "b_" in f or "nir_" in f):
+        # Extract the index (e.g., "0" from "r_0.png")
+        index = f.split("_")[-1].split(".")[0]
+        indices.add(index)
 
-def verify_dimensions(*arrays):
-    shapes = [arr.shape for arr in arrays]
-    if not all(shape == shapes[0] for shape in shapes):
-        raise ValueError(f"All channels must have the same dimensions. Found shapes: {shapes}")
+# Loop through each index and process the corresponding images
+for index in sorted(indices, key=lambda x: int(x)):  # Sort indices numerically
+    # File paths for the input PNGs
+    r_path = os.path.join(input_folder, f"r_{index}.png")
+    g_path = os.path.join(input_folder, f"g_{index}.png")
+    b_path = os.path.join(input_folder, f"b_{index}.png")
+    nir_path = os.path.join(input_folder, f"nir_{index}.png")
 
+    # Check if all required files exist
+    if not all(os.path.exists(p) for p in [r_path, g_path, b_path, nir_path]):
+        print(f"Skipping index {index}: Missing files")
+        continue
 
-if __name__ == "__main__":
+    # Output path for the stacked 4-band GeoTIFF
+    output_path = os.path.join(output_folder, f"image_{index}.tif")
 
-    #path_to_directory_of_channels_to_stack = r"../urban-tree-detection-data/transfer_Atlantic/output_train_FINETUNING"
-    #directory_of_images_to_chop = r"../urban-tree-detection-data/stacked_initial_training_images"
-    path_to_directory_of_channels_to_stack = r"../urban-tree-detection-data/transfer_Atlantic/output_train_all"
-    directory_of_images_to_chop = r"../urban-tree-detection-data/stacked_many_training_images"
+    # Read the first band (e.g., r_0.png) to get metadata
+    with rasterio.open(r_path) as src:
+        meta = src.meta.copy()
+        transform = src.transform
+        crs = src.crs
 
-    prefix_for_channel_N = "nir_"
-    #suffix_of_last_channel = 105
-    suffix_of_last_channel = 1419
-    extension = ".png" 
+        # Update metadata for a 4-band TIFF
+        meta.update({
+            "count": 4,  # Number of bands (RGBN)
+            "dtype": "uint8",  # Force output to 8-bit
+            "photometric": "RGB"  # Ensure no transparency
+        })
 
-    for index_of_image in range(0, suffix_of_last_channel + 1):
-        red_path = os.path.join(path_to_directory_of_channels_to_stack, f'r_{index_of_image}' + extension)
-        green_path = os.path.join(path_to_directory_of_channels_to_stack, f'g_{index_of_image}' + extension)
-        blue_path = os.path.join(path_to_directory_of_channels_to_stack, f'b_{index_of_image}' + extension)
-        nir_path = os.path.join(path_to_directory_of_channels_to_stack, f'{prefix_for_channel_N}{index_of_image}' + extension)
+    # Read all bands into a list
+    stacked_data = []
+    for band_path in [r_path, g_path, b_path, nir_path]:
+        with rasterio.open(band_path) as src:
+            # Ensure spatial properties match the first image
+            assert src.transform == transform, f"Geotransform mismatch in {band_path}!"
+            assert src.crs == crs, f"CRS mismatch in {band_path}!"
+            # Read only the first band (index 1) to ignore transparency
+            band_data = src.read(1)
+            stacked_data.append(band_data)
 
-        try:
-            red_channel = load_channel(red_path)
-            green_channel = load_channel(green_path)
-            blue_channel = load_channel(blue_path)
-            nir_channel = load_channel(nir_path)
-        except Exception as e:
-            print(e)
-            continue
+    # Stack all bands into a single array
+    stacked_data = np.stack(stacked_data, axis=0)
 
-        verify_dimensions(red_channel, green_channel, blue_channel, nir_channel)
+    # Scale the entire stacked image to 0-255
+    stacked_data = scale_to_8bit_global(stacked_data)
 
-        stacked_array = np.stack([red_channel, green_channel, blue_channel, nir_channel], axis = 0)
-        #stacked_array = np.stack([nir_channel, red_channel, green_channel], axis = 0)
+    # Write the stacked 4-band GeoTIFF (no transparency)
+    with rasterio.open(output_path, "w", **meta) as dst:
+        dst.write(stacked_data)
 
-        if not os.path.exists(directory_of_images_to_chop):
-            os.makedirs(directory_of_images_to_chop)
-
-        output_tif_path = os.path.join(directory_of_images_to_chop, f'image_{index_of_image}.tif')
-        tifffile.imwrite(
-            output_tif_path,
-            stacked_array,
-            metadata = None,
-            dtype = stacked_array.dtype
-        )
+    print(f"Stacked 4-band GeoTIFF saved to: {output_path}")
