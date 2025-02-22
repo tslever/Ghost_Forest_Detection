@@ -2,16 +2,29 @@ from skimage import io, color, filters, measure
 import pandas as pd
 from PIL import ImageFile
 import matplotlib.pyplot as plt
+import os
 import rasterio
 
 # Allow loading truncated images.
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
+#folder_with_annotation_images = "../urban-tree-detection-data/transfer_Atlantic/output_train_FINETUNING"
+#path_to_csv_files = f"../urban-tree-detection-data/csv_files_of_initial_tables_of_coordinates_of_centroids_of_trees"
+folder_with_annotation_images = "../urban-tree-detection-data/transfer_Atlantic/output_train_all"
+path_to_csv_files = f"../urban-tree-detection-data/csv_files_of_many_tables_of_coordinates_of_centroids_of_trees"
+
+indices = set()
+for f in os.listdir(folder_with_annotation_images):
+    if f.endswith(".png") and ("annotation_" in f):
+        # Extract the index (e.g., "0" from "annotation_0.png")
+        index = f.split("_")[-1].split(".")[0]
+        indices.add(index)
+
 # Process each annotation image.
-for index_of_annotation in range(105 + 1):
+for index_of_annotation in indices:
     # --- Process annotation image to extract contours and centroids ---
     # Read the annotation image.
-    annotation_image = rasterio.open(f'data/output_train_FINETUNING/annotation_{index_of_annotation}.png').read(1)
+    annotation_image = rasterio.open(f'{folder_with_annotation_images}/annotation_{index_of_annotation}.png').read(1)
     
     # Convert annotation image to grayscale if needed.
     if len(annotation_image.shape) == 2:
@@ -34,9 +47,12 @@ for index_of_annotation in range(105 + 1):
     
     # Save centroids to CSV.
     centroids_df = pd.DataFrame(data, columns=["x", "y"]).round().astype(int)
-    csv_filename = f"data/csv_files_of_tables_of_coordinates_of_centroids_of_trees/coordinates_of_centroids_{index_of_annotation}.csv"
+    if not os.path.exists(path_to_csv_files):
+        os.makedirs(path_to_csv_files)
+    csv_filename = f"{path_to_csv_files}/coordinates_of_centroids_{index_of_annotation}.csv"
     centroids_df.to_csv(csv_filename, index=False)
     
+    '''
     # Reload the centroids data from the CSV file.
     reloaded_centroids_df = pd.read_csv(csv_filename)
     
@@ -73,3 +89,4 @@ for index_of_annotation in range(105 + 1):
     output_filename = f'data/overlays_of_images_polygons_and_centroids/overlay_{index_of_annotation}.png'
     plt.savefig(output_filename, dpi=300)
     plt.close(fig)
+    '''
