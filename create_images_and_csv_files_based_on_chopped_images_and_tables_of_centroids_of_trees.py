@@ -127,22 +127,36 @@ def chop_csv_into_subtables(
 if __name__ == "__main__":
 
     tile_size = 256
-    tiff_output_dir = "./data/images_based_on_chopped_images"
-    csv_output_dir = "./data/csv_files_based_on_chopped_tables_of_centroids_of_trees"
 
-    for index_of_image in range(0, 105 + 1):
-        input_tiff_path = f"./data/images_to_chop/image_{index_of_image}.tif"
-        input_csv_path = f"./data/csv_files_of_tables_of_coordinates_of_centroids_of_trees/coordinates_of_centroids_{index_of_image}.csv"
+    #path_to_input_images = f"../urban-tree-detection-data/stacked_initial_training_images"
+    #path_to_input_csv_files = f"../urban-tree-detection-data/csv_files_of_initial_tables_of_coordinates_of_centroids_of_trees"
+    #path_to_chopped_images = f"../urban-tree-detection-data/images_based_on_chopped_initial_images"
+    #path_to_chopped_csv_files = f"../urban-tree-detection-data/csv_files_based_on_chopped_initial_tables_of_centroids_of_trees"
+    path_to_input_images = f"../urban-tree-detection-data/stacked_many_training_images"
+    path_to_input_csv_files = f"../urban-tree-detection-data/csv_files_of_many_tables_of_coordinates_of_centroids_of_trees"
+    path_to_chopped_images = f"../urban-tree-detection-data/images_based_on_chopped_many_images"
+    path_to_chopped_csv_files = f"../urban-tree-detection-data/csv_files_based_on_chopped_many_tables_of_centroids_of_trees"
+
+    indices = set()
+    for f in os.listdir(path_to_input_images):
+        if f.endswith(".tif") and ("image_" in f):
+            # Extract the index (e.g., "0" from "image_0.tif")
+            index = f.split("_")[-1].split(".")[0]
+            indices.add(index)
+
+    for index_of_image in indices:
+        input_tiff_path = f"{path_to_input_images}/image_{index_of_image}.tif"
+        input_csv_path = f"{path_to_input_csv_files}/coordinates_of_centroids_{index_of_image}.csv"
         
         height, width = chop_tiff_into_subimages(
             input_tiff_path,
-            output_directory = tiff_output_dir,
+            output_directory = path_to_chopped_images,
             tile_size = tile_size
         )
 
         chop_csv_into_subtables(
             input_csv_path = input_csv_path,
-            output_directory = csv_output_dir,
+            output_directory = path_to_chopped_csv_files,
             tile_size = tile_size,
             image_height = height,
             image_width = width
