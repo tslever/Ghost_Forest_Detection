@@ -4,10 +4,14 @@ import numpy as np
 
 # Input folder with georeferenced PNGs
 #input_folder = "../urban-tree-detection-data/transfer_Atlantic/output_train_FINETUNING"
-input_folder = "../urban-tree-detection-data/transfer_Atlantic/output_train_all"
+#input_folder = "../urban-tree-detection-data/transfer_Atlantic/output_train_all"
+#input_folder = "../urban-tree-detection-data/transfer_Atlantic/output_val_FINETUNING"
+input_folder = "../urban-tree-detection-data/transfer_Atlantic/output_val_all"
 # Output folder for stacked TIFFs
 #output_folder = "../urban-tree-detection-data/stacked_initial_training_images"
-output_folder = "../urban-tree-detection-data/stacked_many_training_images"
+#output_folder = "../urban-tree-detection-data/stacked_many_training_images"
+#output_folder = "../urban-tree-detection-data/stacked_initial_validation_images"
+output_folder = "../urban-tree-detection-data/stacked_many_validation_images"
 os.makedirs(output_folder, exist_ok = True)
 
 # Function to scale data to 0 - 255
