@@ -132,10 +132,18 @@ if __name__ == "__main__":
     #path_to_input_csv_files = f"../urban-tree-detection-data/csv_files_of_initial_tables_of_coordinates_of_centroids_of_trees"
     #path_to_chopped_images = f"../urban-tree-detection-data/images_based_on_chopped_initial_images"
     #path_to_chopped_csv_files = f"../urban-tree-detection-data/csv_files_based_on_chopped_initial_tables_of_centroids_of_trees"
-    path_to_input_images = f"../urban-tree-detection-data/stacked_many_training_images"
-    path_to_input_csv_files = f"../urban-tree-detection-data/csv_files_of_many_tables_of_coordinates_of_centroids_of_trees"
-    path_to_chopped_images = f"../urban-tree-detection-data/images_based_on_chopped_many_images"
-    path_to_chopped_csv_files = f"../urban-tree-detection-data/csv_files_based_on_chopped_many_tables_of_centroids_of_trees"
+    #path_to_input_images = f"../urban-tree-detection-data/stacked_many_training_images"
+    #path_to_input_csv_files = f"../urban-tree-detection-data/csv_files_of_many_tables_of_coordinates_of_centroids_of_trees"
+    #path_to_chopped_images = f"../urban-tree-detection-data/images_based_on_chopped_many_images"
+    #path_to_chopped_csv_files = f"../urban-tree-detection-data/csv_files_based_on_chopped_many_tables_of_centroids_of_trees"
+    #path_to_input_images = f"../urban-tree-detection-data/stacked_initial_validation_images"
+    #path_to_input_csv_files = f"../urban-tree-detection-data/csv_files_of_initial_validation_tables_of_coordinates_of_centroids_of_trees"
+    #path_to_chopped_images = f"../urban-tree-detection-data/images_based_on_chopped_initial_validation_images"
+    #path_to_chopped_csv_files = f"../urban-tree-detection-data/csv_files_based_on_chopped_initial_validation_tables_of_centroids_of_trees"
+    path_to_input_images = f"../urban-tree-detection-data/stacked_many_validation_images"
+    path_to_input_csv_files = f"../urban-tree-detection-data/csv_files_of_many_validation_tables_of_coordinates_of_centroids_of_trees"
+    path_to_chopped_images = f"../urban-tree-detection-data/images_based_on_chopped_many_validation_images"
+    path_to_chopped_csv_files = f"../urban-tree-detection-data/csv_files_based_on_chopped_many_validation_tables_of_centroids_of_trees"
 
     indices = set()
     for f in os.listdir(path_to_input_images):
