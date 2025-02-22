@@ -39,18 +39,12 @@ def verify_dimensions(*arrays):
 
 if __name__ == "__main__":
 
-    path_to_directory_of_channels_to_stack = r".\data\output_train_FINETUNING"
-    directory_of_images_to_chop = r".\data\images_to_chop"
+    path_to_directory_of_channels_to_stack = r"../urban-tree-detection-data/transfer_Atlantic/output_train_FINETUNING"
+    directory_of_images_to_chop = r"../urban-tree-detection-data/stacked_initial_training_images"
 
-    if path_to_directory_of_channels_to_stack == r".\data\output_train_FINETUNING":
-        prefix_for_channel_N = "nir_"
-        suffix_of_last_channel = 105
-        extension = ".png"
-    if path_to_directory_of_channels_to_stack == r".\data\channels":
-        prefix_for_channel_N = "n_"
-        suffix_of_last_channel = 10
-        extension = ".tif"
-    
+    prefix_for_channel_N = "nir_"
+    suffix_of_last_channel = 105
+    extension = ".png" 
 
     for index_of_image in range(0, suffix_of_last_channel + 1):
         red_path = os.path.join(path_to_directory_of_channels_to_stack, f'r_{index_of_image}' + extension)
@@ -71,6 +65,9 @@ if __name__ == "__main__":
 
         stacked_array = np.stack([red_channel, green_channel, blue_channel, nir_channel], axis = 0)
         #stacked_array = np.stack([nir_channel, red_channel, green_channel], axis = 0)
+
+        if not os.path.exists(directory_of_images_to_chop):
+            os.makedirs(directory_of_images_to_chop)
 
         output_tif_path = os.path.join(directory_of_images_to_chop, f'image_{index_of_image}.tif')
         tifffile.imwrite(
