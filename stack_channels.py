@@ -39,11 +39,14 @@ def verify_dimensions(*arrays):
 
 if __name__ == "__main__":
 
-    path_to_directory_of_channels_to_stack = r"../urban-tree-detection-data/transfer_Atlantic/output_train_FINETUNING"
-    directory_of_images_to_chop = r"../urban-tree-detection-data/stacked_initial_training_images"
+    #path_to_directory_of_channels_to_stack = r"../urban-tree-detection-data/transfer_Atlantic/output_train_FINETUNING"
+    #directory_of_images_to_chop = r"../urban-tree-detection-data/stacked_initial_training_images"
+    path_to_directory_of_channels_to_stack = r"../urban-tree-detection-data/transfer_Atlantic/output_train_all"
+    directory_of_images_to_chop = r"../urban-tree-detection-data/stacked_many_training_images"
 
     prefix_for_channel_N = "nir_"
-    suffix_of_last_channel = 105
+    #suffix_of_last_channel = 105
+    suffix_of_last_channel = 1419
     extension = ".png" 
 
     for index_of_image in range(0, suffix_of_last_channel + 1):
