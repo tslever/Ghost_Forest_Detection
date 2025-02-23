@@ -140,16 +140,20 @@ if __name__ == "__main__":
     #path_to_input_csv_files = f"../urban-tree-detection-data/csv_files_of_initial_validation_tables_of_coordinates_of_centroids_of_trees"
     #path_to_chopped_images = f"../urban-tree-detection-data/images_based_on_chopped_initial_validation_images"
     #path_to_chopped_csv_files = f"../urban-tree-detection-data/csv_files_based_on_chopped_initial_validation_tables_of_centroids_of_trees"
-    path_to_input_images = f"../urban-tree-detection-data/stacked_many_validation_images"
-    path_to_input_csv_files = f"../urban-tree-detection-data/csv_files_of_many_validation_tables_of_coordinates_of_centroids_of_trees"
-    path_to_chopped_images = f"../urban-tree-detection-data/images_based_on_chopped_many_validation_images"
-    path_to_chopped_csv_files = f"../urban-tree-detection-data/csv_files_based_on_chopped_many_validation_tables_of_centroids_of_trees"
+    #path_to_input_images = f"../urban-tree-detection-data/stacked_many_validation_images"
+    #path_to_input_csv_files = f"../urban-tree-detection-data/csv_files_of_many_validation_tables_of_coordinates_of_centroids_of_trees"
+    #path_to_chopped_images = f"../urban-tree-detection-data/images_based_on_chopped_many_validation_images"
+    #path_to_chopped_csv_files = f"../urban-tree-detection-data/csv_files_based_on_chopped_many_validation_tables_of_centroids_of_trees"
+    path_to_input_images = f"../urban-tree-detection-data/stacked_testing_images"
+    path_to_input_csv_files = f"../urban-tree-detection-data/csv_files_of_testing_tables_of_coordinates_of_centroids_of_trees"
+    path_to_chopped_images = f"../urban-tree-detection-data/images_based_on_chopped_testing_images"
+    path_to_chopped_csv_files = f"../urban-tree-detection-data/csv_files_based_on_chopped_testing_tables_of_centroids_of_trees"
 
     indices = set()
     for f in os.listdir(path_to_input_images):
         if f.endswith(".tif") and ("image_" in f):
-            # Extract the index (e.g., "0" from "image_0.tif")
-            index = f.split("_")[-1].split(".")[0]
+            # Extract the index: all text after the first underscore and before the last period.
+            index = f.split("_", 1)[1].rsplit(".", 1)[0]
             indices.add(index)
 
     for index_of_image in indices:
