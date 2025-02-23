@@ -6,12 +6,16 @@ import numpy as np
 #input_folder = "../urban-tree-detection-data/transfer_Atlantic/output_train_FINETUNING"
 #input_folder = "../urban-tree-detection-data/transfer_Atlantic/output_train_all"
 #input_folder = "../urban-tree-detection-data/transfer_Atlantic/output_val_FINETUNING"
-input_folder = "../urban-tree-detection-data/transfer_Atlantic/output_val_all"
+#input_folder = "../urban-tree-detection-data/transfer_Atlantic/output_val_all"
+input_folder = "../urban-tree-detection-data/transfer_Atlantic/output_eval"
+
 # Output folder for stacked TIFFs
 #output_folder = "../urban-tree-detection-data/stacked_initial_training_images"
 #output_folder = "../urban-tree-detection-data/stacked_many_training_images"
 #output_folder = "../urban-tree-detection-data/stacked_initial_validation_images"
-output_folder = "../urban-tree-detection-data/stacked_many_validation_images"
+#output_folder = "../urban-tree-detection-data/stacked_many_validation_images"
+output_folder = "../urban-tree-detection-data/stacked_testing_images"
+
 os.makedirs(output_folder, exist_ok = True)
 
 # Function to scale data to 0 - 255
@@ -23,16 +27,15 @@ def scale_to_8bit_global(data):
         data = data.astype(np.uint8)
     return data
 
-# Get all unique indices from the filenames
 indices = set()
 for f in os.listdir(input_folder):
-    if f.endswith(".png") and ("r_" in f or "g_" in f or "b_" in f or "nir_" in f):
-        # Extract the index (e.g., "0" from "r_0.png")
-        index = f.split("_")[-1].split(".")[0]
+    if f.endswith(".png") and any(prefix in f for prefix in ("r_", "g_", "b_", "nir_")):
+        # Extract the index: all text after the first underscore and before the last period.
+        index = f.split("_", 1)[1].rsplit(".", 1)[0]
         indices.add(index)
 
 # Loop through each index and process the corresponding images
-for index in sorted(indices, key=lambda x: int(x)):  # Sort indices numerically
+for index in sorted(indices, key = lambda x: str(x)):
     # File paths for the input PNGs
     r_path = os.path.join(input_folder, f"r_{index}.png")
     g_path = os.path.join(input_folder, f"g_{index}.png")
@@ -72,7 +75,7 @@ for index in sorted(indices, key=lambda x: int(x)):  # Sort indices numerically
             stacked_data.append(band_data)
 
     # Stack all bands into a single array
-    stacked_data = np.stack(stacked_data, axis=0)
+    stacked_data = np.stack(stacked_data, axis = 0)
 
     # Scale the entire stacked image to 0-255
     stacked_data = scale_to_8bit_global(stacked_data)
