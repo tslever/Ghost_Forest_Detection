@@ -14,14 +14,16 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 #path_to_csv_files = f"../urban-tree-detection-data/csv_files_of_many_tables_of_coordinates_of_centroids_of_trees"
 #folder_with_annotation_images = "../urban-tree-detection-data/transfer_Atlantic/output_val_FINETUNING"
 #path_to_csv_files = f"../urban-tree-detection-data/csv_files_of_initial_validation_tables_of_coordinates_of_centroids_of_trees"
-folder_with_annotation_images = "../urban-tree-detection-data/transfer_Atlantic/output_val_all"
-path_to_csv_files = f"../urban-tree-detection-data/csv_files_of_many_validation_tables_of_coordinates_of_centroids_of_trees"
+#folder_with_annotation_images = "../urban-tree-detection-data/transfer_Atlantic/output_val_all"
+#path_to_csv_files = f"../urban-tree-detection-data/csv_files_of_many_validation_tables_of_coordinates_of_centroids_of_trees"
+folder_with_annotation_images = "../urban-tree-detection-data/transfer_Atlantic/output_eval"
+path_to_csv_files = f"../urban-tree-detection-data/csv_files_of_testing_tables_of_coordinates_of_centroids_of_trees"
 
 indices = set()
 for f in os.listdir(folder_with_annotation_images):
     if f.endswith(".png") and ("annotation_" in f):
-        # Extract the index (e.g., "0" from "annotation_0.png")
-        index = f.split("_")[-1].split(".")[0]
+        # Extract the index: all text after the first underscore and before the last period.
+        index = f.split("_", 1)[1].rsplit(".", 1)[0]
         indices.add(index)
 
 # Process each annotation image.
