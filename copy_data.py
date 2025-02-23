@@ -2,14 +2,25 @@ import os
 import shutil
 
 # Define paths
-source_folder = '../urban-tree-detection-data/images_based_on_chopped_initial_training_images'
-destination_folder = '../urban-tree-detection/images'
-train_file_path = '../urban-tree-detection/train.txt'
+#source_folder = '../urban-tree-detection-data/images_based_on_chopped_initial_training_images'
+#source_folder = '../urban-tree-detection-data/images_based_on_chopped_many_training_images'
+#source_folder = '../urban-tree-detection-data/images_based_on_chopped_initial_validation_images'
+#source_folder = '../urban-tree-detection-data/images_based_on_chopped_many_validation_images'
+#source_folder = "../urban-tree-detection-data/csv_files_based_on_chopped_initial_training_tables_of_centroids_of_trees"
+#source_folder = "../urban-tree-detection-data/csv_files_based_on_chopped_many_training_tables_of_centroids_of_trees"
+#source_folder = "../urban-tree-detection-data/csv_files_based_on_chopped_initial_validation_tables_of_centroids_of_trees"
+source_folder = "../urban-tree-detection-data/csv_files_based_on_chopped_many_validation_tables_of_centroids_of_trees"
 
-# Create the train.txt file if it does not exist
-if not os.path.exists(train_file_path):
-    with open(train_file_path, 'w') as f:
-        pass  # File created
+#listing_path = '../urban-tree-detection-data/train.txt'
+#listing_path = '../urban-tree-detection-data/val.txt'
+
+#destination_folder = '../urban-tree-detection-data/images'
+destination_folder = "../urban-tree-detection-data/csv"
+
+# Create the listing if it does not exist
+#if not os.path.exists(listing_path):
+#    with open(listing_path, 'w') as f:
+#        pass  # File created
 
 # Ensure the destination folder exists
 if not os.path.exists(destination_folder):
@@ -29,8 +40,8 @@ for file_name in os.listdir(source_folder):
         print(file_name)
         
         # Remove the file extension before appending
-        name_without_ext, _ = os.path.splitext(file_name)
+        #name_without_ext, _ = os.path.splitext(file_name)
         
         # Append the name without extension to train.txt
-        with open(train_file_path, 'a') as train_file:
-            train_file.write(name_without_ext + '\n')
+        #with open(listing_path, 'a') as train_file:
+        #    train_file.write(name_without_ext + '\n')
