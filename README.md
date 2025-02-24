@@ -8,7 +8,11 @@ Tom Lever created a fork of Git repository [urban-tree-detection-data](https://g
 
 Henry Yeung uploaded directory `transfer_Atlantic` to the root of `urban-tree-detection-data`. `transfer_Atlantic` contains subdirectories `output_eval`, `output_train_all`, `output_train_FINETUNING`, `output_val_all`, and `output_val_FINETUNING`. These subdirectories all contain grayscale images representing red, green, blue, and near infrared channels of satellite images and annotation images corresponding to those satellite images.
 
-TODO: Describe the format of the grayscale images and annotation images relating to numeric values and geographic metadata.
+The grayscale images in each folder are stored as PNG files that are georeferenced, meaning they include embedded geographic metadata such as the geotransform and coordinate reference system (CRS). The numeric pixel values in these images may span a range larger than 8-bit; however, during processing (as seen in `stack_channels.py`), the data are scaled to an 8-bit range (0 - 255) to ensure consistency and compatibility.
+
+Annotation images follow a similar format: they are georeferenced PNGs where the pixel values are used to represent vertices of polygons circumscribing dead trees. This preserved geographic metadata ensures that both satellite images and annotation images can be accurately aligned with one another.
+
+Tom and Henry in creating `stack_channels.py` needed to use a Python package like `rasterio` that is compatible with these georeferenced images. Earlier use of other image processing libraries caused misalignment between ultimate images and CSV files.
 
 ### Stack Channels into Images
 
