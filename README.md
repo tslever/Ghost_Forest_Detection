@@ -30,7 +30,7 @@ Tom created images and CSV files based on chopped stacked images and tables of c
 
 ### Copy Images and CSV Files Based on Chopped Images and Tables of Centroids To Final Locations
 
-Tom copied images and CSV files based on chopped images and tables of centroids to their final locations for consumption by the neural network by using `python copy_data.py`. Tom harcoded each source folder of images or CSV files. Tom hardcoded a destination for all images or a destination for all CSV files. If images were being copied, Tom hardcoded a listing path and included related code to list the base names of images in training, validation, and testing text files. If CSV files were being copied, Tom commented out listing paths and related code so that base names would not be duplicated.
+Tom copied images and CSV files based on chopped images and tables of centroids to their final locations for consumption by the neural network by using `python copy_data.py`. Tom harcoded each source folder of images or CSV files. Tom hardcoded destination folders for all images and all CSV files and listing paths.
 
 ### Transition to Git Repository `urban-tree-detection`
 
