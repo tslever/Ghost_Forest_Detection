@@ -1,62 +1,63 @@
 import os
 import shutil
 
+for source_folder in [
+    '../urban-tree-detection-data/images_based_on_chopped_initial_training_images',
+    '../urban-tree-detection-data/images_based_on_chopped_many_training_images',
+    '../urban-tree-detection-data/images_based_on_chopped_initial_validation_images',
+    '../urban-tree-detection-data/images_based_on_chopped_many_validation_images',
+    '../urban-tree-detection-data/images_based_on_chopped_testing_images',
+    "../urban-tree-detection-data/csv_files_based_on_chopped_initial_training_tables_of_centroids_of_trees",
+    "../urban-tree-detection-data/csv_files_based_on_chopped_many_training_tables_of_centroids_of_trees",
+    "../urban-tree-detection-data/csv_files_based_on_chopped_initial_validation_tables_of_centroids_of_trees",
+    "../urban-tree-detection-data/csv_files_based_on_chopped_many_validation_tables_of_centroids_of_trees",
+    "../urban-tree-detection-data/csv_files_based_on_chopped_testing_tables_of_centroids_of_trees"
+]:
 
-#source_folder = '../urban-tree-detection-data/images_based_on_chopped_initial_training_images'
-#source_folder = '../urban-tree-detection-data/images_based_on_chopped_many_training_images'
+    # Determine listing path based on the type (training, validation, testing)
+    if "training" in source_folder:
+        listing_path = '../urban-tree-detection-data/train.txt'
+    elif "validation" in source_folder:
+        listing_path = '../urban-tree-detection-data/val.txt'
+    elif "testing" in source_folder:
+        listing_path = '../urban-tree-detection-data/test.txt'
+    else:
+        raise Exception("Could not determine whether the source folder is training, validation, or testing.")
 
-#source_folder = '../urban-tree-detection-data/images_based_on_chopped_initial_validation_images'
-#source_folder = '../urban-tree-detection-data/images_based_on_chopped_many_validation_images'
+    # Determine the destination folder and whether we need to write to a listing.
+    if "images" in source_folder:
+        destination_folder = '../urban-tree-detection-data/images'
+        write_listing = True
+    else:
+        destination_folder = "../urban-tree-detection-data/csv"
+        write_listing = False  # Only image base names are added to the listing.
 
-#source_folder = '../urban-tree-detection-data/images_based_on_chopped_testing_images'
+    # Create an empty listing file if needed (for images) and if it doesn't already exist.
+    if write_listing and not os.path.exists(listing_path):
+        open(listing_path, 'w').close()
 
+    # Ensure the destination folder exists.
+    if not os.path.exists(destination_folder):
+        os.makedirs(destination_folder)
 
-#source_folder = "../urban-tree-detection-data/csv_files_based_on_chopped_initial_training_tables_of_centroids_of_trees"
-#source_folder = "../urban-tree-detection-data/csv_files_based_on_chopped_many_training_tables_of_centroids_of_trees"
+    # Loop over files in the source folder.
+    for file_name in os.listdir(source_folder):
+        src_path = os.path.join(source_folder, file_name)
+        dst_path = os.path.join(destination_folder, file_name)
 
-#source_folder = "../urban-tree-detection-data/csv_files_based_on_chopped_initial_validation_tables_of_centroids_of_trees"
-#source_folder = "../urban-tree-detection-data/csv_files_based_on_chopped_many_validation_tables_of_centroids_of_trees"
+        if os.path.isfile(src_path):
+            try:
+                shutil.copy2(src_path, dst_path)
+            except Exception as e:
+                print(f"Error copying {file_name}: {e}")
+                continue
 
-source_folder = "../urban-tree-detection-data/csv_files_based_on_chopped_testing_tables_of_centroids_of_trees"
-
-
-# Determine listing path.
-if "training" in source_folder:
-    listing_path = '../urban-tree-detection-data/train.txt'
-elif "validation" in source_folder:
-    listing_path = '../urban-tree-detection-data/val.txt'
-elif "testing" in source_folder:
-    listing_path = '../urban-tree-detection-data/test.txt'
-else:
-    raise Exception("Whether source folder contains training, validation, or testing images could not be determined.")
-    
-
-# Determine destination folder.
-if "images" in source_folder:
-    destination_folder = '../urban-tree-detection-data/images'
-else:
-    destination_folder = "../urban-tree-detection-data/csv"
-
-
-if "images" in source_folder and not os.path.exists(listing_path):
-    with open(listing_path, 'w') as f:
-        pass
-
-
-if not os.path.exists(destination_folder):
-    os.makedirs(destination_folder)
-
-
-for file_name in os.listdir(source_folder):
-    src_path = os.path.join(source_folder, file_name)
-    dst_path = os.path.join(destination_folder, file_name)
-    
-    if os.path.isfile(src_path):
-        shutil.copy2(src_path, dst_path)
-        
-        print(file_name)
-        
-        if "images" in source_folder:
-            name_without_ext, _ = os.path.splitext(file_name)
-            with open(listing_path, 'a') as train_file:
-                train_file.write(name_without_ext + '\n')
+            # Only add to the listing if the file now exists in the destination folder.
+            if os.path.exists(dst_path):
+                print(f"Copied: {file_name}")
+                if write_listing:
+                    name_without_ext, _ = os.path.splitext(file_name)
+                    with open(listing_path, 'a') as listing_file:
+                        listing_file.write(name_without_ext + '\n')
+            else:
+                raise Exception(f"Failed to copy {file_name}; skipping listing update.")
