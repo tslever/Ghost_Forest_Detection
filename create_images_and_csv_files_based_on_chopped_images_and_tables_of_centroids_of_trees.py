@@ -3,6 +3,7 @@ import os
 import pandas as pd
 import rasterio
 from rasterio.transform import Affine
+import json
 
 
 def chop_tiff_into_subimages(
@@ -85,6 +86,11 @@ def chop_tiff_into_subimages(
                 
                 with rasterio.open(out_tiff, 'w', **tile_profile) as dst:
                     dst.write(tile)
+                
+                metadata = {'sub_height': sub_height, 'sub_width': sub_width}
+                metadata_path = out_tiff.replace('.tif', '.json')
+                with open(metadata_path, 'w') as f:
+                    json.dump(metadata, f)
                 
                 subimage_index += 1
 
