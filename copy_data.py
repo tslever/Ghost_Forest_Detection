@@ -1,7 +1,7 @@
 import os
 import shutil
 
-for source_folder in [
+list_of_paths = [
     '../urban-tree-detection-data/images_based_on_chopped_initial_training_images',
     '../urban-tree-detection-data/images_based_on_chopped_many_training_images',
     '../urban-tree-detection-data/images_based_on_chopped_initial_validation_images',
@@ -12,7 +12,11 @@ for source_folder in [
     "../urban-tree-detection-data/csv_files_based_on_chopped_initial_validation_tables_of_centroids_of_trees",
     "../urban-tree-detection-data/csv_files_based_on_chopped_many_validation_tables_of_centroids_of_trees",
     "../urban-tree-detection-data/csv_files_based_on_chopped_testing_tables_of_centroids_of_trees"
-]:
+]
+
+
+#for source_folder in list_of_paths:
+for source_folder in [list_of_paths[i] for i in [0,2,4,5,7,9]]: #SUBSETTING FOR WHEN WE WANT SMALLER DATASET
 
     # Determine listing path based on the type (training, validation, testing)
     if "training" in source_folder:
